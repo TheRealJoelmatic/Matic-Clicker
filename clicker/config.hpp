@@ -1,7 +1,5 @@
 #pragma once
 
-#include "archivex.hpp"
-
 #include <shlobj.h>
 #include <fstream>
 #include <filesystem>
@@ -28,22 +26,30 @@ public:
 	{
 		int i_clicker_key { 0 };
 		int i_clicker_key_right { 0 };
+
 		int i_key_type { 0 };
 		int i_version_type { 0 };
 
 		bool b_enable_left_clicker { false };
 		bool b_enable_right_clicker { false };
 
+		bool t_MC_found{ false };
+
+		bool k_use_left{ false };
+		bool k_use_right{ false };
+
 		float f_left_cps { rng::random_real<float>( 9.5f, 12.5f ) };
 		float f_right_cps { rng::random_real<float>( 9.5f, 12.5f ) };
 
 		bool b_enable_blatant { false };
 
-		int i_hide_window_key { 0 };
+		int i_hide_window_key{ 0 };
+
+		bool f_hide_window{ false };
 
 		bool b_enable_advanced_options { false };
 
-		bool b_enable_persistence { false };
+		bool b_enable_persistence { true };
 		float f_persistence_value { rng::random_real<float>( 1.f, 5.f ) };
 
 		float f_persistence_update_rate { 3000.f };
@@ -60,10 +66,11 @@ public:
 
 		bool b_only_in_game { false };
 
-		float f_color_accent[4] { 0.41f, 0.41f, 0.86f, 1.00f };
-		float f_color_accent_hovered[4] { 0.53f, 0.53f, 0.91f, 1.00f };
-		float f_color_accent_active[4] { 0.40f, 0.39f, 0.90f, 1.00f };
-		float f_color_accent_text[4] { 0.94f, 0.94f, 0.94f, 1.00f };
+		float f_color_accent[4]{ 0.0f, 0.24f, 0.44f, 1.0f }; // #003D71FF
+		float f_color_accent_hovered[4]{ 0.12f, 0.16f, 0.32f, 1.0f }; // #1E2952FF
+		float f_color_accent_active[4]{ 0.0f, 0.18f, 0.36f, 1.0f }; // #002F5DFF
+		float f_color_accent_text[4]{ 1.0f, 1.0f, 1.0f, 1.0f }; // #FFFFFFFF
+
 
 		std::string str_window_title;
 	} clicker;

@@ -21,14 +21,11 @@ INT WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	std::thread(&c_clicker::update_cps, g_clicker.get()).detach();
 	std::thread(&c_clicker::update_variables, g_clicker.get()).detach();
 
-	// TODO: Custom config folder
-	config.run( "clicker" );
-
 	// Setup menu
-	log_debug( "Loading.." );
+	//log_debug( "Loading.." );
 	if ( !g_menu->setup() )
 	{
-		log_err( "Failed to setup menu!" );
+		//log_err( "Failed to setup menu!" );
 		g_menu->destroy();
 
 		return EXIT_FAILURE;

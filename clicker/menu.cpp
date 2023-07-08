@@ -1,5 +1,6 @@
 #include "pch.hpp"
 #include "menu.hpp"
+#include "utils.hpp"
 
 namespace directx9
 {
@@ -30,271 +31,197 @@ void c_menu::on_paint()
 
 	if ( !vars::b_is_running )
 		std::exit( 0 );
-
-	if ( ImGui::Begin( "Matic Clicker by @Joelmatic", &vars::b_is_running, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove ) )
-	{
-		if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) )
-			get_mouse_offset( x, y, ctx::hWnd);
-
-		if ( y >= 0 && y <= ( ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4 ) && ImGui::IsMouseDragging( ImGuiMouseButton_Left ) )
-			set_position( x, y, ctx::menu_width, ctx::menu_height, ctx::hWnd);
-
-		if ( ImGui::BeginTabBar( "##var::clicker::tabs" ) )
+	if (config.clicker.t_MC_found) {
+		if (ImGui::Begin("Matic Clicker by @Joelmatic", &vars::b_is_running, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove))
 		{
-			// mouse
-			if (ImGui::BeginTabItem("Clicker"))
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				get_mouse_offset(x, y, ctx::hWnd);
+
+			if (y >= 0 && y <= (ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4) && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+				set_position(x, y, ctx::menu_width, ctx::menu_height, ctx::hWnd);
+
+			if (ImGui::BeginTabBar("##var::clicker::tabs"))
 			{
-				ImGui::Text("");
-				TextCentered("Toggle Keybind");
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("Set the key bind to use the auto clicker");
-				ImGui::Separator();
-
-				ImGui::Text("");
-				//set keybind box to do
-				ImGui::SameLine();
-				keybind_button(config.clicker.i_clicker_key, 150, 22);
-				ImGui::Checkbox("Use for left clicker", &config.clicker.b_enable_advanced_options);
-				ImGui::Checkbox("Use for right clicker", &config.clicker.b_enable_advanced_options);
-
-				ImGui::Text("");
-
-				//Clickers
-				ImGui::Separator();
-				TextCentered("General");
-				TextCentered("Press Ctrl + Left click on the slider for custom values.");
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("Values between 9.5f - 12.5f are recommended for bypassing server-sided anti-cheats.");
-				ImGui::Separator();
-
-				ImGui::Text("");
-
-				//Clicker + slider
-				ImGui::Checkbox("Left mouse clicker", &config.clicker.b_enable_left_clicker);
-				ImGui::SliderFloat("##var::clicker::f_left_cps", &config.clicker.f_left_cps, 1.f, 20.f, "%.2f cps");
-
-				ImGui::Checkbox("Right mouse clicker", &config.clicker.b_enable_right_clicker);
-				ImGui::SliderFloat("##var::clicker::f_right_cps", &config.clicker.f_right_cps, 1.f, 20.f, "%.2f cps");
-
-				ImGui::Text("");
-
-				//The end of mouse
-				ImGui::EndTabItem();
-			}
-
-			// misc
-			if (ImGui::BeginTabItem("Settings")) {
-				//title
-				TextCentered("Game");
-				ImGui::Separator();
-
-				ImGui::Text("");
-				ImGui::Combo("##var::clicker::i_version_type", &config.clicker.i_version_type, "Minecraft\0Custom\0\0");
-
-
-				switch (config.clicker.i_version_type)
+				// mouse
+				if (ImGui::BeginTabItem("Clicker"))
 				{
-				case 1:
-					static char window_name_buffer[32];
-					ImGui::InputText("##var::input::buffer", window_name_buffer, IM_ARRAYSIZE(window_name_buffer));
+					TextCentered("Toggle Keybind");
 					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("If you leave it blank it will not work anywhere.");
-
-					config.clicker.str_window_title = window_name_buffer;
-					break;
-				}
-				ImGui::Text("");
-
-				//if blanant dont care about Randomization
-				if (!config.clicker.b_enable_blatant)
-				{
-					ImGui::Separator();
-					TextCentered("Randomization");
+						ImGui::SetTooltip("Set the key bind to use the auto clicker");
 					ImGui::Separator();
 
-					ImGui::Checkbox("Persistence (Recommended)", &config.clicker.b_enable_persistence);
-					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("This randomization is applied in a short period");
-
-					if (config.clicker.b_enable_persistence)
-						ImGui::SliderFloat("##var::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps");
-
-					ImGui::Checkbox("Spike chance", &config.clicker.b_enable_cps_spikes);
-					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("Spikes the amount to defined value with the given chance.");
-
-					if (config.clicker.b_enable_cps_spikes)
-					{
-						ImGui::SliderInt("##var::clicker::i_cps_spike_chance", &config.clicker.i_cps_spike_chance, 1, 100, "chance %d%%");
-						ImGui::SliderFloat("##var::clicker::f_cps_spike_add", &config.clicker.f_cps_spike_add, 1.f, 5.f, "add %.1f cps");
-					}
-
-					ImGui::Checkbox("Drop chance", &config.clicker.b_enable_cps_drops);
-					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("Drops the amount to defined value with the given chance.");
-
-					if (config.clicker.b_enable_cps_drops)
-					{
-						ImGui::SliderInt("##var::clicker::i_cps_drop_chance", &config.clicker.i_cps_drop_chance, 1, 100, "chance %d%%");
-						ImGui::SliderFloat("##var::clicker::f_cps_drop_remove", &config.clicker.f_cps_drop_remove, 1.f, 5.f, "remove %.1f cps");
-					}
-
-					ImGui::Checkbox("Advanced options", &config.clicker.b_enable_advanced_options);
-					if (config.clicker.b_enable_advanced_options)
-					{
-						ImGui::Text("Maximum update rate delay");
-						if (ImGui::IsItemHovered())
-							ImGui::SetTooltip("Maximum CPS rate delay update.");
-
-						ImGui::SliderFloat("##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 1500.f, 10000.f, "%.1f ms");
-
-						ImGui::Text("Default timer randomization");
-						if (ImGui::IsItemHovered())
-							ImGui::SetTooltip("Default timer delay variation.");
-
-						ImGui::SliderFloat("##var::clicker::f_default_timer_randomization", &config.clicker.f_default_timer_randomization, 1.f, 15.f, "%.1f ms");
-					}
-				}
-				//other tab
-				ImGui::Separator();
-				TextCentered("Other");
-				ImGui::Separator();
-				ImGui::Checkbox("Blatant (not recommend)", &config.clicker.b_enable_blatant);
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("If this is enabled no randomization will be added. Use it at your own risk.");
-				ImGui::EndTabItem();
-			}
-			// misc
-			if ( ImGui::BeginTabItem( "misc" ) )
-			{
-				ImGui::Separator();
-				TextCentered("Hide");
-				ImGui::Separator();
-
-				ImGui::Text( "Hide window key" );
-				keybind_button( config.clicker.i_hide_window_key, 155, 22 );
-
-				ImGui::Checkbox("Always on top", &config.clicker.b_enable_right_clicker);
-				ImGui::Checkbox("Hide in task bar", &config.clicker.b_enable_right_clicker);
-
-				ImGui::Separator();
-				ImGui::Text( "Colors" );
-				ImGui::Separator();
-				ImGui::ColorEdit4( "Color accent", config.clicker.f_color_accent, ImGuiColorEditFlags_NoInputs );
-				ImGui::ColorEdit4( "Color accent hovered", config.clicker.f_color_accent_hovered, ImGuiColorEditFlags_NoInputs );
-				ImGui::ColorEdit4( "Color accent active", config.clicker.f_color_accent_active, ImGuiColorEditFlags_NoInputs );
-				ImGui::ColorEdit4( "Color accent text", config.clicker.f_color_accent_text, ImGuiColorEditFlags_NoInputs );
-
-				ImGui::Separator();
-				static bool show_advanced_debug { false };
-				ImGui::Checkbox( "Show advanced debug info", &show_advanced_debug );
-
-				if ( show_advanced_debug )
-				{
-					ImGui::Text( "Information" );
-					ImGui::Separator();
-					ImGui::Text( "Clicks this session: %d", vars::stats::i_clicks_this_session );
-					ImGui::Text( "Average CPS: %.2f", vars::stats::f_average_cps );
-					ImGui::Text( "Is left button down: %s", vars::key::is_left_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES);
-					ImGui::Text( "Is right button down: %s", vars::key::is_right_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES );
-					ImGui::Text( "Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES );
-
-					if ( !focus::active_window_title().empty() )
-						ImGui::Text( "Current window name: %ls", focus::active_window_title().data() );
-
-					ImGui::Text( "Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate );
-				}
-
-				ImGui::Separator();
-				ImGui::Text( "Base code form: https://github.com/b1scoito/clicker" );
-				if ( ImGui::IsItemHovered() )
-					ImGui::SetTooltip( "Click me!" );
-				if ( ImGui::IsItemClicked( ImGuiMouseButton_Left ) )
-					ShellExecute( 0, 0, L"https://github.com/b1scoito/clicker", 0, 0, SW_SHOW );
-
-				ImGui::Text("My github: https://github.com/TheRealJoelmatic");
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("Click me!");
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-					ShellExecute(0, 0, L"https://github.com/TheRealJoelmatic", 0, 0, SW_SHOW);
- 
-				ImGui::EndTabItem();
-			}
-
-
-			//config needs a rewrite
-			if ( ImGui::BeginTabItem( "config" ) )
-			{
-				ImGui::Text( "Config settings" );
-				ImGui::Separator();
-
-				if ( ImGui::Button( "Open config folder" ) )
-				{
-					if ( PIDLIST_ABSOLUTE pidl; SUCCEEDED( SHParseDisplayName( config.get_path().wstring().data(), 0, &pidl, 0, 0 ) ) )
-					{
-						ITEMIDLIST id_null = { 0 };
-						LPCITEMIDLIST pidl_null[1] = { &id_null };
-						SHOpenFolderAndSelectItems( pidl, 1, pidl_null, 0 );
-						ILFree( pidl );
-					}
-				}
-
-				constexpr auto& config_items = config.get_configs();
-				static auto current_config = -1;
-
-				if ( (size_t) ( current_config ) >= config_items.size() )
-					current_config = -1;
-
-				static char buffer[32];
-
-				ImGui::Text( "Configs" );
-				if ( ImGui::ListBox( "##var::clicker::config_list", &current_config, []( void* data, int idx, const char** out_text )
-				{
-					auto& vector = *( std::vector<std::string> * )( data );
-					*out_text = vector[idx].c_str();
-					return true;
-				}, &config_items, (int) ( config_items.size() ), 5 ) && current_config != -1 ) strcpy_s( buffer, config_items[current_config].c_str() );
-
-				if ( ImGui::InputText( "##var::clicker::config_name", buffer, IM_ARRAYSIZE( buffer ), ImGuiInputTextFlags_EnterReturnsTrue ) )
-				{
-					if ( current_config != -1 )
-						config.rename( current_config, buffer );
-				}
-
-				if ( ImGui::Button( "Create", ImVec2( 60, 25 ) ) )
-					config.add( buffer );
-
-				ImGui::SameLine();
-
-				if ( ImGui::Button( "Reset", ImVec2( 60, 25 ) ) )
-					config.reset();
-
-				ImGui::SameLine();
-
-				if ( current_config > -1 )
-				{
-					if ( ImGui::Button( "Save", ImVec2( 60, 25 ) ) )
-						config.save( current_config );
-
+					ImGui::Text("");
+					//set keybind box to do
+					ImGui::Checkbox("Use for left clicker", &config.clicker.k_use_left);
 					ImGui::SameLine();
+					ImGui::Checkbox("Use for right clicker", &config.clicker.k_use_right);
+					keybind_button(config.clicker.i_clicker_key, 150, 22);
+					ImGui::Text("");
 
-					if ( ImGui::Button( "Load", ImVec2( 60, 25 ) ) )
-						config.load( current_config );
+					//Clickers
+					ImGui::Separator();
+					TextCentered("General");
+					TextCentered("Press Ctrl + Left click on the slider for custom values.");
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Values between 9.5f - 12.5f are recommended for bypassing server-sided anti-cheats.");
+					ImGui::Separator();
 
-					ImGui::SameLine();
+					ImGui::Text("");
 
-					if ( ImGui::Button( "Delete", ImVec2( 60, 25 ) ) )
-						config.remove( current_config );
+					//Clicker + slider
+					ImGui::Checkbox("Left mouse clicker", &config.clicker.b_enable_left_clicker);
+					ImGui::SliderFloat("##var::clicker::f_left_cps", &config.clicker.f_left_cps, 1.f, 20.f, "%.2f cps");
+
+					ImGui::Checkbox("Right mouse clicker", &config.clicker.b_enable_right_clicker);
+					ImGui::SliderFloat("##var::clicker::f_right_cps", &config.clicker.f_right_cps, 1.f, 20.f, "%.2f cps");
+
+					ImGui::Text("");
+
+					//The end of mouse
+					ImGui::EndTabItem();
 				}
 
-				ImGui::EndTabItem();
+				// misc
+				if (ImGui::BeginTabItem("Settings")) {
+
+					//if blanant dont care about Randomization
+					if (!config.clicker.b_enable_blatant)
+					{
+						TextCentered("Randomization");
+						ImGui::Separator();
+
+						ImGui::Checkbox("Persistence (Recommended)", &config.clicker.b_enable_persistence);
+						if (ImGui::IsItemHovered())
+							ImGui::SetTooltip("This randomization is applied in a short period");
+
+						if (config.clicker.b_enable_persistence)
+							ImGui::SliderFloat("##var::clicker::f_persistence_value", &config.clicker.f_persistence_value, 1.f, 5.f, "%.1f cps");
+
+						ImGui::Checkbox("Spike chance", &config.clicker.b_enable_cps_spikes);
+						if (ImGui::IsItemHovered())
+							ImGui::SetTooltip("Spikes the amount to defined value with the given chance.");
+
+						if (config.clicker.b_enable_cps_spikes)
+						{
+							ImGui::SliderInt("##var::clicker::i_cps_spike_chance", &config.clicker.i_cps_spike_chance, 1, 100, "chance %d%%");
+							ImGui::SliderFloat("##var::clicker::f_cps_spike_add", &config.clicker.f_cps_spike_add, 1.f, 5.f, "add %.1f cps");
+						}
+
+						ImGui::Checkbox("Drop chance", &config.clicker.b_enable_cps_drops);
+						if (ImGui::IsItemHovered())
+							ImGui::SetTooltip("Drops the amount to defined value with the given chance.");
+
+						if (config.clicker.b_enable_cps_drops)
+						{
+							ImGui::SliderInt("##var::clicker::i_cps_drop_chance", &config.clicker.i_cps_drop_chance, 1, 100, "chance %d%%");
+							ImGui::SliderFloat("##var::clicker::f_cps_drop_remove", &config.clicker.f_cps_drop_remove, 1.f, 5.f, "remove %.1f cps");
+						}
+
+						ImGui::Checkbox("Advanced options", &config.clicker.b_enable_advanced_options);
+						if (config.clicker.b_enable_advanced_options)
+						{
+							ImGui::Text("Maximum update rate delay");
+							if (ImGui::IsItemHovered())
+								ImGui::SetTooltip("Maximum CPS rate delay update.");
+
+							ImGui::SliderFloat("##var::clicker::f_persistence_update_rate", &config.clicker.f_persistence_update_rate, 1500.f, 10000.f, "%.1f ms");
+
+							ImGui::Text("Default timer randomization");
+							if (ImGui::IsItemHovered())
+								ImGui::SetTooltip("Default timer delay variation.");
+
+							ImGui::SliderFloat("##var::clicker::f_default_timer_randomization", &config.clicker.f_default_timer_randomization, 1.f, 15.f, "%.1f ms");
+						}
+					}
+					//other tab
+					ImGui::Separator();
+					TextCentered("Other");
+					ImGui::Separator();
+					ImGui::Checkbox("Blatant (not recommend)", &config.clicker.b_enable_blatant);
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("If this is enabled no randomization will be added. Use it at your own risk.");
+					ImGui::EndTabItem();
+				}
+				// misc
+				if (ImGui::BeginTabItem("misc"))
+				{
+					ImGui::Text("Colors");
+					ImGui::Separator();
+					ImGui::ColorEdit4("Color accent", config.clicker.f_color_accent, ImGuiColorEditFlags_NoInputs);
+					ImGui::ColorEdit4("Color accent hovered", config.clicker.f_color_accent_hovered, ImGuiColorEditFlags_NoInputs);
+					ImGui::ColorEdit4("Color accent active", config.clicker.f_color_accent_active, ImGuiColorEditFlags_NoInputs);
+					ImGui::ColorEdit4("Color accent text", config.clicker.f_color_accent_text, ImGuiColorEditFlags_NoInputs);
+
+					ImGui::Separator();
+					static bool show_advanced_debug{ false };
+					ImGui::Checkbox("Show advanced debug info", &show_advanced_debug);
+
+					if (show_advanced_debug)
+					{
+						ImGui::Text("Information");
+						ImGui::Separator();
+						ImGui::Text("Clicks this session: %d", vars::stats::i_clicks_this_session);
+						ImGui::Text("Average CPS: %.2f", vars::stats::f_average_cps);
+						ImGui::Text("Is left button down: %s", vars::key::is_left_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES);
+						ImGui::Text("Is right button down: %s", vars::key::is_right_down.b_state ? ICON_FA_CHECK : ICON_FA_TIMES);
+						ImGui::Text("Is hotkey toggled: %s", vars::key::clicker_enabled.get() ? ICON_FA_CHECK : ICON_FA_TIMES);
+						ImGui::Text("Is window focused: %s", focus::window_think() ? ICON_FA_CHECK : ICON_FA_TIMES);
+						ImGui::Text("Is cursor visible: %s", focus::is_cursor_visible() ? ICON_FA_CHECK : ICON_FA_TIMES);
+
+						if (!focus::active_window_title().empty())
+							ImGui::Text("Current window name: %ls", focus::active_window_title().data());
+
+						ImGui::Text("Application average: %.1f ms (%.1f fps)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+					}
+
+					ImGui::Separator();
+					ImGui::Text("Base code form: https://github.com/b1scoito/clicker");
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Click me!");
+					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+						ShellExecute(0, 0, L"https://github.com/b1scoito/clicker", 0, 0, SW_SHOW);
+
+					ImGui::Text("My github: https://github.com/TheRealJoelmatic");
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Click me!");
+					if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+						ShellExecute(0, 0, L"https://github.com/TheRealJoelmatic", 0, 0, SW_SHOW);
+
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
 			}
-			
-			ImGui::EndTabBar();
+			ImGui::End();
 		}
-		ImGui::End();
+	}
+	else
+	{
+	bool isRunning = minecraft::isMCProcessRunning();
+	config.clicker.t_MC_found = isRunning;
+		
+		if (ImGui::Begin("Matic Clicker by @Joelmatic", &vars::b_is_running, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove))
+		{
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				get_mouse_offset(x, y, ctx::hWnd);
+
+			if (y >= 0 && y <= (ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 4) && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+				set_position(x, y, ctx::menu_width, ctx::menu_height, ctx::hWnd);
+
+			if (ImGui::BeginTabBar("##var::clicker::tabs"))
+			{
+				// mouse
+				if (ImGui::BeginTabItem("ERROR!")) {
+					TextCentered("Minecraft not found!");
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Please open minecraft (It will auto inject)!");
+					TextCentered("Please open minecraft (It will auto inject)!");
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
+			}
+			ImGui::End();
+		}
+		
 	}
 }
 

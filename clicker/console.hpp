@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include <shared_mutex>
@@ -5,10 +6,10 @@
 enum class msg_type_t: std::uint32_t
 {
 	LNONE = 0,
-	LDEBUG = 9,		/* blue */
-	LSUCCESS = 10,	/* green */
-	LERROR = 12,	/* red */
-	LWARN = 14		/* yellow */
+	LDEBUG = 9,		 -* blue * -
+	LSUCCESS = 10,	 -* green * -
+	LERROR = 12,	 -* red * -
+	LWARN = 14		 -* yellow * -
 };
 
 inline std::ostream& operator<< ( std::ostream& os, const msg_type_t type )
@@ -69,20 +70,20 @@ public:
 			std::cout << type;
 			std::cout << "] ";
 
-			SetConsoleTextAttribute( h_console, 15 /* white */ );
+			SetConsoleTextAttribute( h_console, 15  -* white * - );
 			std::cout << "[ ";
 
 			SetConsoleTextAttribute( h_console, (WORD) ( type ) );
 			std::cout << func;
 
-			SetConsoleTextAttribute( h_console, 15 /* white */ );
+			SetConsoleTextAttribute( h_console, 15  -* white * - );
 			std::cout << " ] ";
 		}
 
 		if ( type == msg_type_t::LDEBUG )
-			SetConsoleTextAttribute( h_console, 8 /* gray */ );
+			SetConsoleTextAttribute( h_console, 8  -* gray * - );
 		else
-			SetConsoleTextAttribute( h_console, 15 /* white */ );
+			SetConsoleTextAttribute( h_console, 15  -* white * - );
 
 		std::cout << formated << "\n";
 	}
@@ -102,3 +103,5 @@ inline auto g_logger = logger( L"> clicker debug" );
 #define log_warn(...)
 #define log_raw(...)
 #endif
+
+*/

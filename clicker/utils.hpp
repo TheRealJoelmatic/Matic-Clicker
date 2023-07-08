@@ -1,6 +1,7 @@
 #pragma once
 
 #include <winternl.h>
+#include <TlHelp32.h>
 
 namespace string 
 {
@@ -69,4 +70,11 @@ namespace focus
 
 	bool window_think();
 	bool cursor_think();
+}
+
+namespace minecraft {
+	bool isMCProcessRunning();
+}
+namespace misc{
+	void hideMenu();
 }

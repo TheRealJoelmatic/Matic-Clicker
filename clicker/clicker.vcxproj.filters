@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="config.cpp">
-      <Filter>utils\config</Filter>
-    </ClCompile>
     <ClCompile Include="clicker.cpp">
       <Filter>clicker</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="archivex.hpp">
-      <Filter>utils\config</Filter>
-    </ClInclude>
     <ClInclude Include="config.hpp">
       <Filter>utils\config</Filter>
     </ClInclude>
@@ -97,6 +91,7 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>utils\imgui\stb</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="clicker">
@@ -144,5 +139,12 @@
     <Filter Include="utils\precompiled">
       <UniqueIdentifier>{4b318143-ea30-4b46-875b-edfdf4ad9267}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="clicker.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Users\joelm\Downloads\static.png" />
+    <Image Include="..\..\..\..\Users\joelm\Downloads\static.ico" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,6 @@ class keybind
 {
 public:
     bool b_state = false;
-    bool b_is_down = false;
     bool keyDown = false;
 
     int i_mode = 0;
@@ -20,7 +19,6 @@ public:
     explicit keybind(bool state, int mode = 0, int key = 0)
     {
         b_state = state;
-        i_mode = mode;
         i_key = key;
     }
 
@@ -42,27 +40,13 @@ public:
                 else {
                     if (keyDown) {
                         keyDown = false;
-                        config.clicker.b_enable_left_clicker = !config.clicker.b_enable_left_clicker;
+                        if (config.clicker.k_use_left) {
+                            config.clicker.b_enable_left_clicker = !config.clicker.b_enable_left_clicker;
+                        }
+                        if (config.clicker.k_use_right) {
+                            config.clicker.b_enable_right_clicker = !config.clicker.b_enable_right_clicker;
+                        }
                         std::cout << "Key Released!" << config.clicker.b_enable_left_clicker << std::endl;
-
-                        return false;
-                    }
-                }
-            }
-            if (config.clicker.i_clicker_key_right)
-            {
-                if (GetAsyncKeyState(config.clicker.i_clicker_key_right) & 0x8000) {
-                    if (!keyDown) {
-                        keyDown = true;
-                        std::cout << "Key pressed!" << config.clicker.b_enable_right_clicker << std::endl;
-                        return false;
-                    }
-                }
-                else {
-                    if (keyDown) {
-                        keyDown = false;
-                        config.clicker.b_enable_right_clicker = !config.clicker.b_enable_right_clicker;
-                        std::cout << "Key Released!" << config.clicker.b_enable_right_clicker << std::endl;
 
                         return false;
                     }
@@ -99,19 +83,5 @@ public:
             return true;
         }
         return false;
-    }
-
-
-    std::wstring get_mode_as_string() const
-    {
-        switch (i_mode)
-        {
-        case keybind_state_t::hold:
-            return std::wstring(L"hold");
-        case keybind_state_t::toggle:
-            return std::wstring(L"toggle");
-        }
-
-        return {};
     }
 };

@@ -1,5 +1,6 @@
 #include "pch.hpp"
 #include "clicker.hpp"
+#include "utils.hpp"
 
 //start the clicker thing
 void c_clicker::thread()
@@ -13,7 +14,7 @@ void c_clicker::thread()
 		if ( !this->b_is_right_clicking || !this->b_is_left_clicking )
 			std::this_thread::sleep_for( 1ms );
 
-
+		misc::hideMenu();
 		if (focus::window_think() && focus::cursor_think())
 		{
 			// Left button
@@ -59,8 +60,8 @@ void c_clicker::send_click(input::mouse_button_t b_button, float f_cps )
 
 	++vars::stats::i_clicks_this_session;
 
-	log_debug( "[%d]: CPS: %.3f | delay: %.3fms | time elapsed: %.3fms | avg. CPS: %.3f",
-		vars::stats::i_clicks_this_session, f_cps, (this->f_delay * 2), elapsed.count(), vars::stats::f_average_cps);
+	//log_debug( "[%d]: CPS: %.3f | delay: %.3fms | time elapsed: %.3fms | avg. CPS: %.3f",
+	//	vars::stats::i_clicks_this_session, f_cps, (this->f_delay * 2), elapsed.count(), vars::stats::f_average_cps);
 }
 
 //This is for randon
@@ -75,7 +76,7 @@ void c_clicker::update_cps()
 
 		if ( b_should_update )
 		{
-			log_debug("Update %.3fms", rate);
+			//log_debug("Update %.3fms", rate);
 
 			// Persistence
 			if (config.clicker.b_enable_persistence)

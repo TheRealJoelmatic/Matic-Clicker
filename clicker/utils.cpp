@@ -1,5 +1,10 @@
 #include "pch.hpp"
 #include "utils.hpp"
+#include <windows.h>
+#include <tlhelp32.h>
+#include <iostream>
+#include "utils.hpp"
+
 
 namespace string
 {
@@ -142,5 +147,60 @@ namespace focus
 		}
 
 		return true;
+	}
+}
+
+namespace minecraft
+{
+	bool isMCProcessRunning()
+	{
+		const wchar_t* processName = L"javaw.exe";
+		bool isRunning = false;
+		HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		PROCESSENTRY32 processEntry;
+		processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+		if (Process32First(snapshot, &processEntry))
+		{
+			do
+			{
+				if (_wcsicmp(processEntry.szExeFile, processName) == 0)
+				{
+					isRunning = true;
+					HWND windowHandle = FindWindow(nullptr, processEntry.szExeFile);
+					if (windowHandle != nullptr)
+					{
+						const int bufferSize = 1024;
+						wchar_t buffer[bufferSize];
+						GetWindowText(windowHandle, buffer, bufferSize);
+						config.clicker.str_window_title = std::string(buffer, buffer + wcslen(buffer));
+					}
+					break;
+				}
+			} while (Process32Next(snapshot, &processEntry));
+		}
+
+		CloseHandle(snapshot);
+		return isRunning;
+	}
+}
+
+namespace misc
+{
+	bool keyDown = false;
+
+	void hideMenu() {
+		if (GetAsyncKeyState(config.clicker.i_hide_window_key) & 0x8000) {
+			if (!keyDown) {
+				keyDown = true;
+				std::cout << "Key pressed!" << config.clicker.b_enable_left_clicker << std::endl;
+			}
+		}
+		else {
+			if (keyDown) {
+				keyDown = false;
+				config.clicker.f_hide_window = !config.clicker.f_hide_window;
+			}
+		}
 	}
 }
