@@ -1,20 +1,26 @@
-# clicker
-Minecraft auto-clicker made in modern C++, performance optimized and easy to use.  
-Tested on Forge, Vanilla, Lunar and Badlion. 1.8.9 and 1.7.10.
+# 🌕 Matic clicker 🌕
+Minecraft auto-clicker made in C++, easy to use and powerful. 
 
-![image](https://b.catgirlsare.sexy/JfRVFDUWAG19.png)
+# Pictures
+
+![image](https://i.ibb.co/HKTwKtH/1.jpg)
+#
+![image](https://i.ibb.co/2y86pYq/2.jpg)
+#
+![image](https://i.ibb.co/tx3K6FJ/3.jpg)
 
 # Getting started
 
 ## Download
-Download the latest release at the [releases section](https://github.com/b1scoito/clicker/releases/latest).
-
-### Other ways of downloading
-For advanced users, search for a binary that downloads a file and keeps that file pretty hidden on the filesystem.
-- https://lolbas-project.github.io/#/download
+Download the latest release at the [releases section](https://github.com/TheRealJoelmatic/Matic-Clicker/releases/tag/Release).
 
 ## Bugs or suggestions
-Bugs or suggestions should be reported at the [issues section](https://github.com/b1scoito/clicker/issues).
+Bugs or suggestions should be reported at the [issues section](https://github.com/TheRealJoelmatic/Matic-Clicker/issues).
+
+## Credits
+
+b1scoito - https://github.com/b1scoito
+Joelmatic - https://github.com/TheRealJoelmatic
 
 ## Compiling
 ### Prerequisites
